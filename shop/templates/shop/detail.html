@@ -1,0 +1,180 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ xe.name }} - Chi tiết</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Hiệu ứng cho nút khi bị khóa */
+        .btn-disabled {
+            pointer-events: none;
+            opacity: 0.5;
+            filter: grayscale(1);
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-decoration-none" href="{% url 'trang_chu' %}" 
+   style="color: white; font-size: 1rem; padding: 10px 24px; display: block;">
+    THANHMOTOR SHOP
+</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row bg-white p-4 shadow-sm rounded">
+            <div class="col-md-6">
+                {% if xe.image %}
+                    <img src="{{ xe.image.url }}" class="img-fluid rounded shadow w-100">
+                {% else %}
+                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 300px;">Không có ảnh</div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-6">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'trang_chu' %}">Trang chủ</a></li>
+                        <li class="breadcrumb-item active">{{ xe.category.name }}</li>
+                    </ol>
+                </nav>
+                <h1 class="display-5 fw-bold text-uppercase">{{ xe.name }}</h1>
+                <p class="badge bg-primary fs-6">{{ xe.brand.name }} | {{ xe.category.name }}</p>
+                <hr>
+
+                <div class="price-section mb-4 p-3 border rounded bg-light">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">1. Chọn Phiên bản:</label>
+                        <select class="form-select mb-3 border-primary" id="version-select">
+                            <option value="">-- Chọn phiên bản --</option>
+                            {% regroup xe.variations.all by name as version_list %}
+                            {% for version in version_list %}
+                                <option value="{{ version.grouper }}">{{ version.grouper }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <label class="form-label fw-bold">2. Chọn Màu sắc:</label>
+                        <select class="form-select border-primary mb-3" id="color-select" disabled>
+                            <option value="">-- Vui lòng chọn phiên bản trước --</option>
+                        </select>
+                    </div>
+
+                    <div class="mt-3 pt-3 border-top">
+                        <span class="text-muted fw-bold">Giá bán lẻ đề xuất:</span>
+                        <h3 class="text-danger fw-bold mt-1" id="display-price">
+                            {% with first_variant=xe.variations.all|first %}
+                                {% if first_variant %}
+                                    {{ first_variant.price|intcomma }} VNĐ
+                                {% else %}
+                                    Liên hệ
+                                {% endif %}
+                            {% endwith %}
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <a href="{% url 'nhap_thong_tin' xe.id %}" id="btn-checkout" class="btn btn-danger btn-lg w-100 fw-bold py-3 shadow btn-disabled">
+                        <i class="fas fa-shopping-cart me-2"></i>MUA NGAY & THANH TOÁN
+                    </a>
+                    <small id="checkout-help" class="text-danger d-block mt-2 text-center">
+                        <i class="fas fa-info-circle me-1"></i>Vui lòng chọn phiên bản và màu sắc để thanh toán
+                    </small>
+                </div>
+
+                <h4 class="fw-bold">Mô tả sản phẩm:</h4>
+                <p class="lead" style="white-space: pre-line;">{{ xe.description }}</p>
+            </div>
+        </div>
+    </div>
+
+        <footer class="bg-dark text-white pt-5 pb-4 mt-5 border-top border-secondary">
+        <div class="container text-center text-md-start">
+            <div class="row">
+                <div class="col-md-4 mt-3">
+                    <h5 class="text-uppercase mb-4 fw-bold text-primary">
+                        <i class="fas fa-motorcycle me-2"></i>ThanhMotor Shop
+                    </h5>
+                    <p>Chuyên cung cấp các dòng xe máy chính hãng từ Honda, Yamaha, VinFast. Uy tín - Chất lượng - Tận tâm.</p>
+                </div>
+                <div class="col-md-5 mt-3">
+                    <h5 class="text-uppercase mb-4 fw-bold text-primary">Liên hệ</h5>
+                    <p><i class="fas fa-home me-3"></i> Khu phố 34, phường Linh Xuân, TP. Hồ Chí Minh</p>
+                    <p><i class="fas fa-envelope me-3"></i> 25521715@gm.uit.edu.vn</p>
+                    <p><i class="fas fa-phone me-3"></i> Hotline: 090 xxx xxxx</p>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <h5 class="text-uppercase mb-4 fw-bold text-primary">Giờ làm việc</h5>
+                    <p><i class="fas fa-clock me-2"></i> Thứ 2 - Thứ 7: 08:00 - 20:00</p>
+                    <p><i class="fas fa-clock me-2"></i> Chủ Nhật: 08:00 - 17:00</p>
+                </div>
+            </div>
+            <hr class="mb-4">
+            <div class="text-center">
+                <p class="small">© 2026 Bản quyền thuộc về <strong>ThanhMotor Shop</strong>. Thiết kế bởi Nguyễn Viết Thành.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const variations = [
+            {% for v in xe.variations.all %}
+            {
+                "version": "{{ v.name|escapejs }}",
+                "color": "{{ v.color|escapejs }}",
+                "price": "{{ v.price|intcomma }}"
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        const versionSelect = document.getElementById('version-select');
+        const colorSelect = document.getElementById('color-select');
+        const displayPrice = document.getElementById('display-price');
+        const btnCheckout = document.getElementById('btn-checkout');
+        const checkoutHelp = document.getElementById('checkout-help');
+
+        // Hàm kiểm tra xem đã đủ điều kiện để mở nút thanh toán chưa
+        function validateSelection() {
+            if (versionSelect.value !== "" && colorSelect.value !== "") {
+                btnCheckout.classList.remove('btn-disabled');
+                checkoutHelp.classList.add('d-none'); // Ẩn dòng thông báo nhắc nhở
+            } else {
+                btnCheckout.classList.add('btn-disabled');
+                checkoutHelp.classList.remove('d-none'); // Hiện lại thông báo nếu bỏ chọn
+            }
+        }
+
+        versionSelect.addEventListener('change', function() {
+            const selectedVersion = this.value;
+            colorSelect.innerHTML = '<option value="">-- Chọn màu sắc --</option>';
+            
+            if (selectedVersion) {
+                const filtered = variations.filter(v => v.version === selectedVersion);
+                filtered.forEach(v => {
+                    const opt = document.createElement('option');
+                    opt.value = v.price;
+                    opt.textContent = v.color;
+                    colorSelect.appendChild(opt);
+                });
+                colorSelect.disabled = false;
+            } else {
+                colorSelect.disabled = true;
+                colorSelect.innerHTML = '<option value="">-- Vui lòng chọn phiên bản trước --</option>';
+            }
+            validateSelection();
+        });
+
+        colorSelect.addEventListener('change', function() {
+            const price = this.value;
+            if (price) {
+                displayPrice.innerText = price + " VNĐ";
+            }
+            validateSelection();
+        });
+    </script>
+</body>
+</html>

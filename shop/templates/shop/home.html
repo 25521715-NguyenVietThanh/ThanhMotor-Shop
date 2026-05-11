@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang Chủ - ThanhMotor Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        body { background-color: #000; color: #fff; overflow-x: hidden; } /* Tránh thanh cuộn ngang khi hiệu ứng chạy */
+        .text-primary { color: #0d6efd !important; }
+        .border-secondary { border-color: #333 !important; }
+        
+        /* CSS cho Menu sáng lên khi được chọn */
+        .navbar-nav .nav-link {
+            color: #aaa !important; 
+            border-bottom: 2px solid transparent;
+        }
+        .navbar-nav .nav-link.active {
+            color: #0d6efd !important; 
+            border-bottom: 2px solid #0d6efd !important;
+            font-weight: bold;
+        }
+        
+        /* Hiệu ứng ảnh */
+        .img-hover {
+            transition: transform 0.4s ease;
+        }
+        .img-hover:hover {
+            transform: scale(1.03);
+        }
+
+        /* Hero section với hình xe SH làm nền */
+        .hero-sh {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                        url('https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Tạo hiệu ứng parallax nhẹ */
+            padding: 120px 0;
+            margin-bottom: 3rem;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-0 shadow border-bottom border-secondary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'trang_chu' %}">THANHMOTOR SHOP</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'trang_chu' %}">Trang chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'danh-sach-xe' in request.path %}active{% endif %}" href="{% url 'danh_sach_xe' %}">Sản phẩm</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'dich-vu' in request.path %}active{% endif %}" href="{% url 'dich_vu' %}">Dịch vụ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'tin-tuc' in request.path %}active{% endif %}" href="{% url 'tin_tuc' %}">Tin tức</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero-sh text-center shadow-sm">
+        <div class="container" data-aos="zoom-in" data-aos-duration="1200">
+            <h1 class="display-4 fw-bold">HỆ THỐNG CỬA HÀNG XE MÁY LỚN NHẤT UIT</h1>
+            <p class="lead">Uy tín tạo nên thương hiệu</p>
+            <a href="{% url 'danh_sach_xe' %}" class="btn btn-primary btn-lg px-5 shadow">XEM TẤT CẢ XE</a>
+        </div>
+    </div>
+
+    <div class="container-fluid py-5 bg-dark text-white border-top border-secondary">
+        <div class="container overflow-hidden">
+            <h2 class="fw-bold mb-5 text-center text-primary" data-aos="fade-up">Về ThanhMotor Shop</h2>
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-4 mb-md-0" data-aos="fade-right" data-aos-duration="1000">
+                    <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                         class="img-fluid rounded-3 shadow border border-secondary img-hover" alt="Cửa hàng xe máy">
+                </div>
+                <div class="col-md-6 ps-md-5 text-start" data-aos="fade-left" data-aos-duration="1000">
+                    <p class="text-light">
+                        Được thành lập từ năm 2026, <strong>ThanhMotor Shop</strong> tự hào là đối tác chiến lược của các hãng xe hàng đầu như Honda, Yamaha và tiên phong trong việc phân phối xe điện VinFast.
+                    </p>
+                    <p class="text-light">
+                        Với phương châm "Khách hàng là người thân", chúng tôi không chỉ bán xe mà còn mang đến giải pháp di chuyển an toàn và dịch vụ hậu mãi chuẩn 5 sao.
+                    </p>
+                    <ul class="list-unstyled mt-3">
+                        <li><i class="fas fa-check-circle text-primary me-2"></i> Bảo hành chính hãng lên đến 3 năm</li>
+                        <li><i class="fas fa-check-circle text-primary me-2"></i> Hỗ trợ các dịch vụ bảo dưỡng định kỳ</li>
+                        <li><i class="fas fa-check-circle text-primary me-2"></i> Cứu hộ tận nơi 24/7</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid py-5 bg-white text-dark border-top border-secondary">
+        <div class="container overflow-hidden">
+            <h2 class="fw-bold mb-5 text-center text-primary" data-aos="fade-up">Trải Nghiệm Mua Sắm Xe Hoàn Hảo</h2>
+            <div class="row align-items-center">
+                <div class="col-md-6 pe-md-5 order-2 order-md-1 text-start" data-aos="fade-right" data-aos-duration="1000">
+                    <p class="lead text-primary fw-bold">Chúng tôi không chỉ bán xe, chúng tôi mang đến người bạn đồng hành trên mọi cung đường.</p>
+                    <p class="text-muted" style="line-height: 1.8;">
+                        Với gần 1 tháng kinh nghiệm trong lĩnh vực cung cấp các dòng xe máy từ tay ga thời thượng đến phân khối lớn đầy sức mạnh, ThanhMotor Shop cam kết mang đến những sản phẩm chính hãng, quy trình kiểm định khắt khe và dịch vụ tận tâm nhất.
+                    </p>
+                    <div class="mt-4 text-start">
+                        <a href="{% url 'danh_sach_xe' %}" class="btn btn-outline-primary btn-lg rounded-pill px-5 shadow">
+                            Xem danh sách xe
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6 order-1 order-md-2 mb-4 mb-md-0 text-center" data-aos="fade-left" data-aos-duration="1000">
+                    <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=80" 
+                         class="img-fluid rounded-4 shadow-lg border img-hover" alt="Mô tô">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid py-5 bg-dark text-white border-top border-bottom border-secondary">
+        <div class="container overflow-hidden">
+            <h2 class="fw-bold mb-5 text-center text-primary" data-aos="fade-up">Dịch Vụ Hậu Mãi Chuẩn 5 Sao</h2>
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-4 mb-md-0" data-aos="fade-right" data-aos-duration="1000">
+                    <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80" 
+                         class="img-fluid rounded-3 shadow-lg border border-secondary img-hover" alt="Dịch vụ bảo trì">
+                </div>
+                <div class="col-md-6 ps-md-5 text-start" data-aos="fade-left" data-aos-duration="1000">
+                    <p class="text-light">
+                        Đội ngũ kỹ thuật viên giàu kinh nghiệm được đào tạo bài bản từ chính hãng, đảm bảo chiếc xe của bạn luôn trong tình trạng hoàn hảo nhất.
+                    </p>
+                    <p class="text-light">
+                        Phụ tùng thay thế 100% chính hãng, quy trình bảo dưỡng minh bạch và nhanh chóng. Chúng tôi luôn sẵn sàng hỗ trợ bạn khắc phục mọi sự cố kỹ thuật một cách chuyên nghiệp nhất.
+                    </p>
+                    <div class="mt-4">
+                        <a href="{% url 'dich_vu' %}" class="btn btn-outline-primary btn-lg rounded-pill px-5 shadow">
+                            Xem dịch vụ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid py-5 bg-white text-dark">
+        <div class="container">
+            <h2 class="text-center mb-5 fw-bold text-primary" data-aos="fade-up">Khách hàng nói về chúng tôi</h2>
+            <div class="row">
+                {% for r in reviews %}
+                <div class="col-md-3 mb-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00">
+                    <div class="card h-100 border border-light shadow-sm bg-light text-dark p-3 text-center">
+                        <div class="text-warning mb-2">★★★★★</div>
+                        <p class="fst-italic">"{{ r.content }}"</p>
+                        <p class="fw-bold">- {{ r.name }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center text-muted">Chưa có đánh giá nào.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+        <footer class="bg-dark text-white pt-5 pb-4 mt-5 border-top border-secondary">
+        <div class="container text-center text-md-start">
+            <div class="row">
+                <div class="col-md-4 mt-3">
+                    <h5 class="text-uppercase mb-4 fw-bold text-primary">
+                        <i class="fas fa-motorcycle me-2"></i>ThanhMotor Shop
+                    </h5>
+                    <p>Chuyên cung cấp các dòng xe máy chính hãng từ Honda, Yamaha, VinFast. Uy tín - Chất lượng - Tận tâm.</p>
+                </div>
+                <div class="col-md-5 mt-3">
+                    <h5 class="text-uppercase mb-4 fw-bold text-primary">Liên hệ</h5>
+                    <p><i class="fas fa-home me-3"></i> Khu phố 34, phường Linh Xuân, TP. Hồ Chí Minh</p>
+                    <p><i class="fas fa-envelope me-3"></i> 25521715@gm.uit.edu.vn</p>
+                    <p><i class="fas fa-phone me-3"></i> Hotline: 090 xxx xxxx</p>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <h5 class="text-uppercase mb-4 fw-bold text-primary">Giờ làm việc</h5>
+                    <p><i class="fas fa-clock me-2"></i> Thứ 2 - Thứ 7: 08:00 - 20:00</p>
+                    <p><i class="fas fa-clock me-2"></i> Chủ Nhật: 08:00 - 17:00</p>
+                </div>
+            </div>
+            <hr class="mb-4">
+            <div class="text-center">
+                <p class="small">© 2026 Bản quyền thuộc về <strong>ThanhMotor Shop</strong>. Thiết kế bởi Nguyễn Viết Thành.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000, // Thời gian hiệu ứng 1 giây
+            once: false,    // Lặp lại hiệu ứng mỗi khi cuộn
+            mirror: true    // Hiệu ứng chạy khi cuộn ngược lên lại
+        });
+    </script>
+</body>
+</html>

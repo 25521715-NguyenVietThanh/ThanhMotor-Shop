@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đặt hàng thành công - ThanhMotor Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .success-card {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+        .icon-success {
+            font-size: 90px;
+            color: #198754;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container text-center">
+            <span class="navbar-brand mx-auto fw-bold text-uppercase">ThanhMotor Shop</span>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card success-card text-center p-5">
+                    <div class="mb-3">
+                        <i class="fas fa-check-circle icon-success"></i>
+                    </div>
+                    <h2 class="fw-bold text-success">THANH TOÁN THÀNH CÔNG!</h2>
+                    <p class="text-muted mt-2">Cảm ơn bạn đã tin tưởng ThanhMotor Shop.</p>
+
+                    <hr>
+
+                    <div class="text-start mt-3 mb-4 px-3">
+                        <p class="mb-1"><strong>Mã đơn hàng:</strong> #{{ order.id }}</p>
+                        <p class="mb-1"><strong>Khách hàng:</strong> {{ order.customer_name }}</p>
+                        <p class="mb-1"><strong>Số điện thoại:</strong> {{ order.customer_phone }}</p>
+                        <p class="mb-1"><strong>Địa chỉ:</strong> {{ order.customer_address }}</p>
+                        <p class="mb-0"><strong>Xe đặt mua:</strong> {{ order.motorcycle.name }}</p>
+                    </div>
+
+                    <div class="d-flex flex-column gap-3 align-items-center">
+                        <a href="{% url 'xuat_hoa_don' order.id %}" class="btn btn-primary btn-lg px-5 shadow">
+                            <i class="fas fa-download me-2"></i>TẢI HÓA ĐƠN (.PDF)
+                        </a>
+                        <a href="{% url 'trang_chu' %}" class="btn btn-outline-dark">
+                            Quay lại trang chủ
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <footer class="bg-dark text-white pt-5 pb-4 mt-5 border-top border-secondary">
+        <div class="container text-center text-md-start">
+            <div class="row">
+                <div class="col-md-4 mt-3">
+                    <h5 class="text-uppercase mb-4 fw-bold text-primary">
+                        <i class="fas fa-motorcycle me-2"></i>ThanhMotor Shop
+                    </h5>
+                    <p>Chuyên cung cấp các dòng xe máy chính hãng từ Honda, Yamaha, VinFast. Uy tín - Chất lượng - Tận tâm.</p>
+                </div>
+                <div class="col-md-5 mt-3">
+                    <h5 class="text-uppercase mb-4 fw-bold text-primary">Liên hệ</h5>
+                    <p><i class="fas fa-home me-3"></i> Khu phố 34, phường Linh Xuân, TP. Hồ Chí Minh</p>
+                    <p><i class="fas fa-envelope me-3"></i> 25521715@gm.uit.edu.vn</p>
+                    <p><i class="fas fa-phone me-3"></i> Hotline: 090 xxx xxxx</p>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <h5 class="text-uppercase mb-4 fw-bold text-primary">Giờ làm việc</h5>
+                    <p><i class="fas fa-clock me-2"></i> Thứ 2 - Thứ 7: 08:00 - 20:00</p>
+                    <p><i class="fas fa-clock me-2"></i> Chủ Nhật: 08:00 - 17:00</p>
+                </div>
+            </div>
+            <hr class="mb-4">
+            <div class="text-center">
+                <p class="small">© 2026 Bản quyền thuộc về <strong>ThanhMotor Shop</strong>. Thiết kế bởi Nguyễn Viết Thành.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

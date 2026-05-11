@@ -1,0 +1,136 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thanh toán đơn hàng - ThanhMotor Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .qr-card { border: 2px solid #0d6efd; border-radius: 15px; overflow: hidden; }
+        .info-preview { background: #f8f9fa; border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: left; }
+        #success-section { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        #status-box { border-radius: 12px; padding: 14px 18px; margin-bottom: 16px; font-weight: 600; transition: all 0.4s; }
+        #status-box.waiting { background: #fff3cd; color: #856404; border: 1px solid #ffc107; }
+        #status-box.scanned { background: #d1e7dd; color: #0f5132; border: 1px solid #198754; animation: fadeIn 0.4s ease; }
+        .dot-pulse span { display: inline-block; width: 7px; height: 7px; margin: 0 2px; background: #856404; border-radius: 50%; animation: dotBlink 1.2s infinite; }
+        .dot-pulse span:nth-child(2) { animation-delay: 0.2s; }
+        .dot-pulse span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotBlink { 0%, 80%, 100% { opacity: 0.2; } 40% { opacity: 1; } }
+        #btn-confirm:disabled { opacity: 0.45; cursor: not-allowed; }
+        #btn-confirm.unlocked { animation: pop 0.4s ease; }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container text-center">
+            <span class="navbar-brand mx-auto fw-bold text-uppercase">Xác nhận thanh toán</span>
+        </div>
+    </nav>
+
+    <div class="container text-center mt-4 text-dark">
+        <div id="qr-section">
+            <div class="row justify-content-center">
+                <div class="col-md-5">
+                    <div class="info-preview shadow-sm border">
+                        <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">
+                            <i class="fas fa-user-check me-2"></i>Thông tin đơn hàng
+                        </h5>
+                        <p class="mb-1"><strong>Khách hàng:</strong> {{ order.customer_name }}</p>
+                        <p class="mb-1"><strong>Số điện thoại:</strong> {{ order.customer_phone }}</p>
+                        <p class="mb-1"><strong>Xe đặt mua:</strong> {{ order.motorcycle.name }}</p>
+                        <p class="mb-0 text-danger fs-5 fw-bold"><strong>Tổng tiền:</strong> {{ gia_xe|floatformat:0|intcomma }} VNĐ</p>
+                    </div>
+
+                    <div class="card qr-card shadow mb-4">
+                        <div class="card-header bg-primary text-white fw-bold">
+                            <i class="fas fa-qrcode me-2"></i>QUÉT MÃ ĐỂ XÁC NHẬN
+                        </div>
+                        <div class="p-4">
+                            <img src="data:image/png;base64,{{ qr_code }}" class="img-fluid" style="max-width: 250px;">
+                            <p class="mt-3 small text-muted">
+                                Dùng Camera điện thoại hoặc ứng dụng Ngân hàng quét mã này.<br>
+                                Hệ thống sẽ tự động nhận diện sau khi bạn quét.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="status-box" class="waiting">
+                        <div class="d-flex align-items-center justify-content-center gap-2">
+                            <div class="dot-pulse"><span></span><span></span><span></span></div>
+                            <span id="status-text">Đang chờ bạn quét mã QR...</span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{% url 'nhap_thong_tin' order.motorcycle.id %}" class="btn btn-outline-secondary px-4">
+                            <i class="fas fa-edit me-2"></i>Sửa thông tin
+                        </a>
+                        <button id="btn-confirm" onclick="confirmPayment()" class="btn btn-success fw-bold px-4" disabled>
+                            <i class="fas fa-check-circle me-2"></i>TÔI ĐÃ QUÉT XONG
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="success-section" style="display: none;" class="py-5">
+            <i class="fas fa-check-circle text-success" style="font-size: 100px;"></i>
+            <h1 class="text-success fw-bold mt-4">GIAO DỊCH THÀNH CÔNG!</h1>
+            <p class="lead">Hệ thống đã ghi nhận thanh toán cho đơn hàng #{{ order.id }}</p>
+            <div class="mt-4 d-flex flex-column gap-3 align-items-center">
+                <a href="{% url 'xuat_hoa_don' order.id %}" class="btn btn-primary btn-lg shadow">
+                    <i class="fas fa-download me-2"></i>TẢI HÓA ĐƠN (.PDF)
+                </a>
+                <a href="{% url 'trang_chu' %}" class="btn btn-outline-dark">
+                    Quay lại trang chủ
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STATUS_URL = "{% url 'kiem_tra_qr_status' order.id %}";
+        const CONFIRM_URL = "{% url 'thanh_toan_thanh_cong' order.id %}";
+        let qrScanned = false;
+
+        const pollInterval = setInterval(function () {
+            fetch(STATUS_URL)
+                .then(r => r.json())
+                .then(function (data) {
+                    if (data.scanned && !qrScanned) {
+                        qrScanned = true;
+                        clearInterval(pollInterval);
+                        var box = document.getElementById('status-box');
+                        box.className = 'scanned';
+                        box.innerHTML = '<i class="fas fa-check-circle me-2"></i>Quét mã thành công! Nhấn nút bên dưới để hoàn tất.';
+                        var btn = document.getElementById('btn-confirm');
+                        btn.disabled = false;
+                        btn.classList.add('unlocked');
+                    }
+                })
+                .catch(function () {});
+        }, 2000);
+
+        function confirmPayment() {
+            if (!qrScanned) return;
+            fetch(CONFIRM_URL, { method: 'GET', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(function () {
+                    document.getElementById('qr-section').style.display = 'none';
+                    document.getElementById('success-section').style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                })
+                .catch(function () {
+                    alert('Đã xác nhận nhưng không thể kết nối server. Vui lòng liên hệ cửa hàng.');
+                    document.getElementById('qr-section').style.display = 'none';
+                    document.getElementById('success-section').style.display = 'block';
+                });
+        }
+    </script>
+</body>
+</html>
