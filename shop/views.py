@@ -202,6 +202,10 @@ def quet_ma_qr(request, order_id):
     })
 
 def xac_nhan_qr_mobile(request, order_id, token):
+    """
+    Xác thực mã QR được quét từ thiết bị di động thông qua Token bảo mật.
+    Cập nhật trạng thái qr_scanned cho đơn hàng.
+    """
     import hashlib
     expected_token = hashlib.sha256(f"BANXE-SECRET-{order_id}".encode()).hexdigest()[:16]
     if token != expected_token:
@@ -215,6 +219,7 @@ def xac_nhan_qr_mobile(request, order_id, token):
 
 
 def kiem_tra_qr_status(request, order_id):
+    """API trả về trạng thái quét mã QR dưới dạng JsonResponse (AJAX)."""
     from django.http import JsonResponse
     order = get_object_or_404(Order, id=order_id)
     return JsonResponse({'scanned': order.qr_scanned})
