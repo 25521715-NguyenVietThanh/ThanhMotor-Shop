@@ -80,8 +80,8 @@ Project_BanXe_Fixed/
 ### 1. Clone repository
 
 ```bash
-git clone https://github.com/username/Project_BanXe.git
-cd Project_BanXe
+git clone https://github.com/25521715-NguyenVietThanh/ThanhMotor-Shop.git
+cd ThanhMotor-Shop
 ```
 
 ### 2. Tạo môi trường ảo
@@ -165,7 +165,7 @@ Chọn xe  →  Nhập thông tin  →  Quét mã QR  →  Xác nhận  →  Xu�
 2. Đăng nhập [pythonanywhere.com](https://www.pythonanywhere.com)
 3. Mở Bash console, clone repo:
    ```bash
-   git clone https://github.com/username/Project_BanXe.git
+   git clone https://github.com/25521715-NguyenVietThanh/ThanhMotor-Shop.git
    ```
 4. Cài thư viện và cấu hình Web app theo hướng dẫn của PythonAnywhere
 5. Đặt biến môi trường `DJANGO_SECRET_KEY` trong mục **Environment variables**
