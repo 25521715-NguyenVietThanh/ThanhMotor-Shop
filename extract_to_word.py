@@ -1,7 +1,7 @@
 import ast
 import os
 from docx import Document
-from docx.shared import RGBColor
+from docx.shared import RGBColor, Pt
 
 def extract_docstrings_from_file(file_path):
     """
@@ -32,7 +32,7 @@ def extract_docstrings_from_file(file_path):
 
 def extract_to_word(project_path):
     """
-    Quét dự án và tạo file Word với định dạng tối ưu, các function viết sát nhau hơn.
+    Quét dự án và tạo file Word giữ nguyên định dạng Heading nhưng viết sát nhau hơn.
     """
     doc = Document()
     
@@ -40,6 +40,7 @@ def extract_to_word(project_path):
     title.alignment = 1
 
     for root, dirs, files in os.walk(project_path):
+        # Bỏ qua các thư mục rác
         if any(ignored_dir in root for ignored_dir in ["venv", "__pycache__", ".git", "migrations"]):
             continue
 
@@ -49,37 +50,34 @@ def extract_to_word(project_path):
                 docs = extract_docstrings_from_file(file_path)
 
                 if docs:
-                    # Tiêu đề File (Heading 1) - Tạo ranh giới giữa các file
-                    doc.add_heading(f"File: {file}", level=1)
+                    # Heading 1: Tên File
+                    h1 = doc.add_heading(f"File: {file}", level=1)
+                    h1.paragraph_format.space_before = Pt(12) # Khoảng cách phía trên file mới
+                    h1.paragraph_format.space_after = Pt(2)   # Viết sát nội dung bên dưới
 
                     for doc_type, name, content in docs:
-                        if doc_type == "Module":
-                            # Module docstring ghi bình thường
-                            p = doc.add_paragraph()
-                            run = p.add_run(f"Mô tả file: {content.strip()}")
-                            run.italic = True
-                            run.font.color.rgb = RGBColor(89, 89, 89)
-                        else:
-                            # Class và Function dùng Bullet point để viết sát nhau
-                            # Format: [Loại] Tên: Nội dung docstring
-                            p = doc.add_paragraph(style='List Bullet')
-                            
-                            # Tên Function/Class in đậm
-                            run_name = p.add_run(f"{doc_type} {name}: ")
-                            run_name.bold = True
-                            
-                            # Nội dung docstring in nghiêng, màu xám
-                            run_content = p.add_run(content.strip().replace('\n', ' '))
-                            run_content.italic = True
-                            run_content.font.color.rgb = RGBColor(89, 89, 89)
-
-                    # Chỉ thêm 1 dòng trống sau khi kết thúc 1 FILE
-                    doc.add_paragraph()
+                        # Heading 2: Tên Class/Function
+                        h2 = doc.add_heading(f"{doc_type}: {name}", level=2)
+                        h2.paragraph_format.space_before = Pt(4)  # Thu hẹp khoảng cách với mục trên
+                        h2.paragraph_format.space_after = Pt(0)   # Viết sát với nội dung docstring
+                        
+                        # Nội dung Docstring
+                        p = doc.add_paragraph()
+                        # Loại bỏ các dòng trống thừa trong nội dung và các dấu xuống dòng dư
+                        clean_content = content.strip()
+                        run = p.add_run(clean_content)
+                        
+                        # Làm đẹp
+                        run.italic = True
+                        run.font.color.rgb = RGBColor(89, 89, 89)
+                        
+                        # Thiết lập để paragraph này không tự tạo khoảng cách lớn bên dưới
+                        p.paragraph_format.space_after = Pt(2)
 
     output_name = "Tai_lieu_docstring.docx"
     doc.save(output_name)
-    print(f"✅ Đã trích xuất thành công! Các function đã được gom gọn. Kiểm tra: {output_name}")
+    print(f"✅ Đã trích xuất xong! Định dạng cũ được giữ nguyên nhưng viết sát nhau hơn.")
 
 if __name__ == "__main__":
-    print("⏳ Đang quét và tối ưu hóa tài liệu...")
+    print("⏳ Đang xử lý tài liệu...")
     extract_to_word(".")
