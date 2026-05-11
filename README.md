@@ -120,8 +120,8 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-Truy cập tại: **http://127.0.0.1:8000**  
-Trang quản trị: **http://127.0.0.1:8000/admin**
+Truy cập tại: **https://nguyenvietthanh25521715.pythonanywhere.com**  
+Trang quản trị: **https://nguyenvietthanh25521715.pythonanywhere.com/admin**
 
 ---
 
