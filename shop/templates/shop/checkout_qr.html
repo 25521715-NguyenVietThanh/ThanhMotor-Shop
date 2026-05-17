@@ -41,10 +41,30 @@
                         <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">
                             <i class="fas fa-user-check me-2"></i>Thông tin đơn hàng
                         </h5>
-                        <p class="mb-1"><strong>Khách hàng:</strong> {{ order.customer_name }}</p>
-                        <p class="mb-1"><strong>Số điện thoại:</strong> {{ order.customer_phone }}</p>
-                        <p class="mb-1"><strong>Xe đặt mua:</strong> {{ order.motorcycle.name }}</p>
-                        <p class="mb-0 text-danger fs-5 fw-bold"><strong>Tổng tiền:</strong> {{ gia_xe|floatformat:0|intcomma }} VNĐ</p>
+
+                        <p class="mb-1 text-muted small text-uppercase fw-semibold">Thông tin khách hàng</p>
+                        <p class="mb-1"><i class="fas fa-user text-secondary me-2"></i><strong>Họ và tên:</strong> {{ order.customer_name }}</p>
+                        <p class="mb-1"><i class="fas fa-phone text-secondary me-2"></i><strong>Số điện thoại:</strong> {{ order.customer_phone }}</p>
+                        {% if order.customer_birthday %}
+                        <p class="mb-1"><i class="fas fa-birthday-cake text-secondary me-2"></i><strong>Ngày sinh:</strong> {{ order.customer_birthday }}</p>
+                        {% endif %}
+                        {% if order.customer_gender %}
+                        <p class="mb-1"><i class="fas fa-venus-mars text-secondary me-2"></i><strong>Giới tính:</strong> {{ order.customer_gender }}</p>
+                        {% endif %}
+                        <p class="mb-3"><i class="fas fa-map-marker-alt text-secondary me-2"></i><strong>Địa chỉ:</strong> {{ order.customer_address }}</p>
+
+                        <p class="mb-1 text-muted small text-uppercase fw-semibold">Thông tin sản phẩm</p>
+                        <p class="mb-1"><i class="fas fa-motorcycle text-secondary me-2"></i><strong>Xe đặt mua:</strong> {{ order.motorcycle.name }}</p>
+                        {% if order.motorcycle.brand %}
+                        <p class="mb-1"><i class="fas fa-tag text-secondary me-2"></i><strong>Hãng xe:</strong> {{ order.motorcycle.brand.name }}</p>
+                        {% endif %}
+                        {% if order.motorcycle.category %}
+                        <p class="mb-3"><i class="fas fa-list text-secondary me-2"></i><strong>Loại xe:</strong> {{ order.motorcycle.category.name }}</p>
+                        {% endif %}
+
+                        <div class="border-top pt-2 mt-1">
+                            <p class="mb-0 text-danger fs-5 fw-bold"><i class="fas fa-money-bill-wave me-2"></i><strong>Tổng tiền:</strong> {{ gia_xe|floatformat:0|intcomma }} VNĐ</p>
+                        </div>
                     </div>
 
                     <div class="card qr-card shadow mb-4">
