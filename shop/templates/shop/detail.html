@@ -92,6 +92,101 @@
         </div>
     </div>
 
+
+    <!-- ===== KHU VỰC ĐÁNH GIÁ ===== -->
+    <div class="container my-5">
+        <div class="row">
+
+            <!-- CỘT TRÁI: Danh sách đánh giá -->
+            <div class="col-md-7">
+                <h4 class="fw-bold mb-4">
+                    <i class="fas fa-star text-warning me-2"></i>Đánh giá từ khách hàng
+                    <span class="badge bg-secondary fs-6 ms-2">{{ reviews|length }}</span>
+                </h4>
+
+                {% if reviews %}
+                    {% for review in reviews %}
+                    <div class="card mb-3 shadow-sm border-0">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-bold text-dark">
+                                    <i class="fas fa-user-circle text-primary me-1"></i>{{ review.name }}
+                                </span>
+                                <small class="text-muted">{{ review.created_at|date:"d/m/Y" }}</small>
+                            </div>
+                            <div class="mb-2">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= review.rating %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-warning"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <p class="mb-0 text-secondary">{{ review.content }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted py-4 border rounded bg-white">
+                        <i class="fas fa-comment-slash fa-2x mb-2 d-block"></i>
+                        Chưa có đánh giá nào. Hãy là người đầu tiên!
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- CỘT PHẢI: Form gửi đánh giá -->
+            <div class="col-md-5">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-primary text-white fw-bold">
+                        <i class="fas fa-pen me-2"></i>Gửi đánh giá của bạn
+                    </div>
+                    <div class="card-body">
+                        {% if review_success %}
+                        <div class="alert alert-success d-flex align-items-center" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            Cảm ơn bạn đã gửi đánh giá!
+                        </div>
+                        {% endif %}
+
+                        <form method="POST" action="{% url 'gui_danh_gia' xe.id %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Họ tên của bạn</label>
+                                <input type="text" name="name" class="form-control" required
+                                       placeholder="Nguyễn Văn A" maxlength="100">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Số sao đánh giá</label>
+                                <div class="d-flex gap-2 fs-4" id="star-container">
+                                    {% for i in "12345" %}
+                                    <i class="far fa-star text-warning star-btn"
+                                       data-value="{{ forloop.counter }}"
+                                       style="cursor: pointer;"></i>
+                                    {% endfor %}
+                                </div>
+                                <input type="hidden" name="rating" id="rating-input" value="5">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Nội dung đánh giá</label>
+                                <textarea name="content" class="form-control" rows="4" required
+                                          placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 fw-bold">
+                                <i class="fas fa-paper-plane me-2"></i>GỬI ĐÁNH GIÁ
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- ===== KẾT THÚC KHU VỰC ĐÁNH GIÁ ===== -->
+
         <footer class="bg-dark text-white pt-5 pb-4 mt-5 border-top border-secondary">
         <div class="container text-center text-md-start">
             <div class="row">
@@ -176,5 +271,32 @@
             validateSelection();
         });
     </script>
+
+    <script>
+        // --- Star rating picker ---
+        const stars     = document.querySelectorAll('.star-btn');
+        const ratingInput = document.getElementById('rating-input');
+
+        function renderStars(value) {
+            stars.forEach(s => {
+                const v = parseInt(s.dataset.value);
+                s.classList.toggle('fas', v <= value);
+                s.classList.toggle('far', v >  value);
+            });
+        }
+
+        // Mặc định 5 sao
+        renderStars(5);
+
+        stars.forEach(star => {
+            star.addEventListener('mouseover', () => renderStars(parseInt(star.dataset.value)));
+            star.addEventListener('mouseout',  () => renderStars(parseInt(ratingInput.value)));
+            star.addEventListener('click', () => {
+                ratingInput.value = star.dataset.value;
+                renderStars(parseInt(star.dataset.value));
+            });
+        });
+    </script>
+
 </body>
 </html>

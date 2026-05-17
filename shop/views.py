@@ -110,11 +110,13 @@ def chi_tiet_xe(request, id):
     xe_lien_quan = Motorcycle.objects.filter(brand=xe.brand).exclude(id=id)[:4]
     reviews = Review.objects.all().order_by('-created_at')[:5]
 
+    review_success = request.GET.get('review') == 'ok'
     return render(request, 'shop/detail.html', {
         'xe': xe,
         'categories': categories,
         'xe_lien_quan': xe_lien_quan,
-        'reviews': reviews
+        'reviews': reviews,
+        'review_success': review_success,
     })
 
 def dich_vu_view(request):
@@ -124,6 +126,37 @@ def dich_vu_view(request):
 def tin_tuc(request):
     """Hiển thị trang tin tức và các chương trình khuyến mãi của cửa hàng."""
     return render(request, 'shop/tin_tuc.html')
+
+
+def gui_danh_gia(request, xe_id):
+    """
+    Xử lý form gửi đánh giá của khách hàng cho một sản phẩm xe cụ thể.
+
+    Khi POST:
+    - Lấy tên, số sao và nội dung từ form.
+    - Validate số sao trong khoảng 1-5.
+    - Tạo bản ghi Review mới trong database.
+    - Redirect về trang chi tiết xe kèm thông báo thành công.
+
+    Args:
+        request (HttpRequest): Chứa dữ liệu form POST.
+        xe_id (int): ID của xe được đánh giá.
+
+    Returns:
+        HttpResponse: Redirect về trang chi tiết xe.
+    """
+    xe = get_object_or_404(Motorcycle, id=xe_id)
+    if request.method == 'POST':
+        name    = request.POST.get('name', '').strip()
+        rating  = int(request.POST.get('rating', 5))
+        content = request.POST.get('content', '').strip()
+
+        if name and content and 1 <= rating <= 5:
+            Review.objects.create(name=name, rating=rating, content=content)
+
+    from django.http import HttpResponseRedirect
+    from django.urls import reverse
+    return HttpResponseRedirect(reverse('chi_tiet_xe', args=[xe_id]) + '?review=ok')
 
 def nhap_thong_tin(request, xe_id):
     """
@@ -202,10 +235,6 @@ def quet_ma_qr(request, order_id):
     })
 
 def xac_nhan_qr_mobile(request, order_id, token):
-    """
-    Xác thực mã QR được quét từ thiết bị di động thông qua Token bảo mật.
-    Cập nhật trạng thái qr_scanned cho đơn hàng.
-    """
     import hashlib
     expected_token = hashlib.sha256(f"BANXE-SECRET-{order_id}".encode()).hexdigest()[:16]
     if token != expected_token:
@@ -219,7 +248,6 @@ def xac_nhan_qr_mobile(request, order_id, token):
 
 
 def kiem_tra_qr_status(request, order_id):
-    """API trả về trạng thái quét mã QR dưới dạng JsonResponse (AJAX)."""
     from django.http import JsonResponse
     order = get_object_or_404(Order, id=order_id)
     return JsonResponse({'scanned': order.qr_scanned})

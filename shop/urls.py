@@ -10,6 +10,7 @@ urlpatterns = [
     path('tin-tuc/', views.tin_tuc, name='tin_tuc'),
 
     # Quy trình thanh toán
+    path('gui-danh-gia/<int:xe_id>/', views.gui_danh_gia, name='gui_danh_gia'),
     path('thanh-toan/thong-tin/<int:xe_id>/', views.nhap_thong_tin, name='nhap_thong_tin'),
     path('thanh-toan/quet-ma/<int:order_id>/', views.quet_ma_qr, name='quet_ma_qr'),
     path('thanh-toan/thanh-cong/<int:order_id>/', views.thanh_toan_thanh_cong, name='thanh_toan_thanh_cong'),
