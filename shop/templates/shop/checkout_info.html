@@ -29,7 +29,8 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Ngày tháng năm sinh</label>
-                        <input type="date" name="birthday" class="form-control" required>
+                        <input type="text" name="birthday" id="birthday" class="form-control" required placeholder="dd/mm/yyyy" maxlength="10" autocomplete="off">
+                        <div class="invalid-feedback">Vui lòng nhập đúng định dạng dd/mm/yyyy (ví dụ: 15/08/2000)</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Giới tính</label>
@@ -89,5 +90,33 @@
             </div>
         </div>
     </footer>
+    <script>
+        const birthdayInput = document.getElementById("birthday");
+
+        // Tự động thêm dấu "/" sau khi nhập ngày và tháng
+        birthdayInput.addEventListener("input", function () {
+            let val = this.value.replace(/\D/g, "");
+            if (val.length > 2) val = val.slice(0, 2) + "/" + val.slice(2);
+            if (val.length > 5) val = val.slice(0, 5) + "/" + val.slice(5);
+            this.value = val.slice(0, 10);
+        });
+
+        // Validate khi submit form
+        document.querySelector("form").addEventListener("submit", function (e) {
+            const val = birthdayInput.value;
+            const regex = /^(0[1-9]|[12]\d|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+            if (!regex.test(val)) {
+                e.preventDefault();
+                birthdayInput.classList.add("is-invalid");
+                birthdayInput.focus();
+            } else {
+                birthdayInput.classList.remove("is-invalid");
+            }
+        });
+
+        birthdayInput.addEventListener("input", function () {
+            this.classList.remove("is-invalid");
+        });
+    </script>
 </body>
 </html>
