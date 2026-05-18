@@ -63,17 +63,17 @@ def sort_xe_theo_gia(danh_sach_xe, order='asc'):
     xe_list.sort(key=get_min_price, reverse=(order == 'desc'))
     return xe_list
 
-# --- CẤU TRÚC DỮ LIỆU: DOUBLY LINKED LIST ---
+
 
 class StepNode:
     """
     Nút trong danh sách liên kết đôi, đại diện cho một bước trong quy trình thanh toán.
     """
     def __init__(self, name, url_name):
-        self.name = name          # Tên bước (ví dụ: 'info', 'qr')
-        self.url_name = url_name  # Tên URL pattern trong urls.py
-        self.prev = None          # Liên kết tới bước trước đó
-        self.next = None          # Liên kết tới bước tiếp theo
+        self.name = name          
+        self.url_name = url_name 
+        self.prev = None         
+        self.next = None          
 
 class CheckoutFlow:
     """
@@ -81,7 +81,7 @@ class CheckoutFlow:
     Giúp việc điều hướng "Quay lại" hoặc "Tiếp theo" linh hoạt hơn.
     """
     def __init__(self):
-        self.steps = {} # Lưu trữ dictionary để truy cập nhanh O(1)
+        self.steps = {} 
         self.head = None
         self.tail = None
 
@@ -102,13 +102,13 @@ class CheckoutFlow:
         node = self.steps.get(current_name)
         return node.prev.url_name if node and node.prev else None
 
-# Khởi tạo đối tượng luồng thanh toán cố định
+
 payment_flow = CheckoutFlow()
 payment_flow.add_step('info', 'nhap_thong_tin')
 payment_flow.add_step('qr', 'quet_ma_qr')
 payment_flow.add_step('success', 'thanh_toan_thanh_cong')
 
-# --- CẤU TRÚC DỮ LIỆU: QUEUE ---
+
 
 class OrderQueue:
     """
@@ -116,7 +116,7 @@ class OrderQueue:
     Hỗ trợ cơ chế dọn dẹp tự động các đơn hàng hết hạn xử lý.
     """
     def __init__(self):
-        # Sử dụng deque để tối ưu hiệu năng thêm/xóa ở hai đầu (O(1))
+       
         self.items = deque()
 
     def enqueue(self, order_obj):
@@ -130,9 +130,9 @@ class OrderQueue:
         """
         now = timezone.now()
         while self.items and (now - self.items[0].created_at > timedelta(hours=24)):
-            expired_order = self.items.popleft() # Lấy đơn cũ nhất ra (FIFO)
+            expired_order = self.items.popleft() 
             if expired_order.status == 'pending':
-                expired_order.delete() # Xóa khỏi database nếu chưa thanh toán
+                expired_order.delete() 
 
-# Khởi tạo đối tượng quản lý hàng đợi đơn hàng
+
 order_manager_queue = OrderQueue()
