@@ -55,6 +55,10 @@
 
                         <p class="mb-1 text-muted small text-uppercase fw-semibold">Thông tin sản phẩm</p>
                         <p class="mb-1"><i class="fas fa-motorcycle text-secondary me-2"></i><strong>Xe đặt mua:</strong> {{ order.motorcycle.name }}</p>
+                        
+                        <p class="mb-1"><i class="fas fa-layer-group text-secondary me-2"></i><strong>Phiên bản:</strong> {{ order.motorcycle.variations.first.name }}</p>
+                        <p class="mb-1"><i class="fas fa-palette text-secondary me-2"></i><strong>Màu sắc:</strong> {{ order.motorcycle.variations.first.color }}</p>
+                        
                         {% if order.motorcycle.brand %}
                         <p class="mb-1"><i class="fas fa-tag text-secondary me-2"></i><strong>Hãng xe:</strong> {{ order.motorcycle.brand.name }}</p>
                         {% endif %}
@@ -149,6 +153,7 @@
                     alert('Đã xác nhận nhưng không thể kết nối server. Vui lòng liên hệ cửa hàng.');
                     document.getElementById('qr-section').style.display = 'none';
                     document.getElementById('success-section').style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 });
         }
     </script>
