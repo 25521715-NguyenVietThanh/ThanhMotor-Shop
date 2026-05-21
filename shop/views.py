@@ -185,6 +185,7 @@ def nhap_thong_tin(request, xe_id):
             customer_gender=request.POST.get('gender', ''),
             status='pending'
         )
+        order_manager_queue.cleanup_expired_orders()
         order_manager_queue.enqueue(order)
         return redirect('quet_ma_qr', order_id=order.id)
     
