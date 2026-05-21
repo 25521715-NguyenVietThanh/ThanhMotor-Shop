@@ -6,8 +6,7 @@ Bao gồm các tùy chỉnh hiển thị, bộ lọc, tìm kiếm và tích hợ
 
 from django.contrib import admin
 from .models import Category, Brand, Motorcycle, Review, Variation, Order
-
-
+from .utils import order_manager_queue
 class VariationInline(admin.TabularInline):
     """
     Inline admin cho model Variation, hiển thị trực tiếp bên trong trang chỉnh sửa Motorcycle.
@@ -216,3 +215,7 @@ class OrderAdmin(admin.ModelAdmin):
             'fields': ('motorcycle', 'status', 'qr_scanned', 'created_at')
         }),
     )
+    def changelist_view(self, request, extra_context=None):
+        # Mỗi lần admin mở danh sách đơn hàng → cleanup tự động
+        order_manager_queue.cleanup_expired_orders()
+        return super().changelist_view(request, extra_context)
