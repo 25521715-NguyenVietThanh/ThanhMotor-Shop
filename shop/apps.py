@@ -1,6 +1,3 @@
-from django.apps import AppConfig
-
-
 
 from django.apps import AppConfig
 
@@ -9,13 +6,11 @@ class ShopConfig(AppConfig):
     name = 'shop'
 
     def ready(self):
-        from django.utils import timezone
-        from datetime import timedelta
-        from .utils import order_manager_queue
-
-        # Chỉ load khi DB đã sẵn sàng
         try:
             from .models import Order
+            from django.utils import timezone
+            from datetime import timedelta
+            from .utils import order_manager_queue
             nguong = timezone.now() - timedelta(hours=24)
             don_con_han = Order.objects.filter(
                 status='pending',

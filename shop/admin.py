@@ -216,6 +216,5 @@ class OrderAdmin(admin.ModelAdmin):
         }),
     )
     def changelist_view(self, request, extra_context=None):
-        # Mỗi lần admin mở danh sách đơn hàng → cleanup tự động
         order_manager_queue.cleanup_expired_orders()
         return super().changelist_view(request, extra_context)
