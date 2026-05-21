@@ -561,3 +561,4 @@ def xuat_hoa_don_pdf(request, order_id):
     response = HttpResponse(pdf_bytes, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="HoaDon_{order.id}.pdf"'
     return response
+
